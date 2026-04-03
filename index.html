@@ -35,7 +35,7 @@
 <body>
     <model-viewer
     src="assets/tanjiro.glb"
-    ios-src="assets/tanjiro.usdz"
+    ios-src="https://modelviewer.dev/shared-assets/models/NeilArmstrong.usdz"
     alt="귀멸의 칼날 3D 모델"
     ar
     ar-modes="webxr quick-look"
@@ -47,16 +47,25 @@
 <button slot="ar-button" id ="ar-button">
     지면 인식
 </button>
-<div id ="ar-prompt">
-    <img src="https://modelviewer.dev/shared-assets/icons/hand.png" alt="AR 가이드">
-</div>
 </model-viewer>
 <script>
     const modelviewer = document.querySelector('model-viewer');
-    modelviewer.addEventListener('ar-status',(event) => {
-if(event.detail.status==='object-placed'){
-    console.log("지면에 모델이 배치되었습니다.");
-}
+
+    //안드로이드 지면인식 핸들링
+    modelviewer.addEventListener('ar-status' , (event) => {
+        const status = event.detail.status;
+        console.log("현재 AR 상태", status);
+
+        if(status === 'session-started'){
+            alert("바닥을 천천히 비추어주십시오.");
+        }else if(status==='object-placed'){
+            console.log("배치 완");
+        }
+    });
+
+    //에러 핸들링
+    modelviewer.addEventListener('error', (error) => {
+        console.error("WebAR 로드 에러", error);
     });
 </script>
     
