@@ -27,8 +27,24 @@
             padding: 12px 24px;
             color: white;
             font-weight: bold;
-            box-shadow: 0 4px 6px rgbx(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             cursor: pointer;
+        }
+
+        /* AR 안내 메시지 오버레이 */
+        #ar-hint {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.65);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 9999;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -44,27 +60,35 @@
     touch-action="pan-y"
     shadow-intensity="1"
     auto-rotate>
-<button slot="ar-button" id ="ar-button">
-    지면 인식
+<button slot="ar-button" id="ar-button">
+    AR 보기
 </button>
 </model-viewer>
+
+<div id="ar-hint">바닥을 천천히 비추어주세요</div>
+
 <script>
-    const modelviewer = document.querySelector('model-viewer');
+    const modelViewer = document.querySelector('model-viewer');
+    const arHint = document.getElementById('ar-hint');
 
-    //안드로이드 지면인식 핸들링
-    modelviewer.addEventListener('ar-status' , (event) => {
+    modelViewer.addEventListener('ar-status', (event) => {
         const status = event.detail.status;
-        console.log("현재 AR 상태", status);
+        console.log("AR 상태:", status);
 
-        if(status === 'session-started'){
-            alert("바닥을 천천히 비추어주십시오.");
-        }else if(status==='object-placed'){
-            console.log("배치 완");
+        if (status === 'session-started') {
+            arHint.style.display = 'block';
+        } else if (status === 'object-placed' || status === 'failed') {
+            arHint.style.display = 'none';
         }
     });
 
-    //에러 핸들링
-    modelviewer.addEventListener('error', (error) => {
+    modelViewer.addEventListener('ar-tracking', (event) => {
+        if (event.detail.status === 'tracking') {
+            arHint.style.display = 'none';
+        }
+    });
+
+    modelViewer.addEventListener('error', (error) => {
         console.error("WebAR 로드 에러", error);
     });
 </script>
