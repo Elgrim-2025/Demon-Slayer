@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>귀멸의 칼날 3D SAMPLE</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <style>
+        body{margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh;}
+        /*3D 뷰어 스타일*/
+        model-viewer{
+            width: 100%;
+            height: 80vh;
+            background-color: #f5f5f5;
+            --poster-color: transparent;
+        }
+
+        /*AR 진입 버튼 */
+        #ar-button {
+            background-color: #2B3138;
+            border-radius: 10px;
+            border: none;
+            position: absolute;
+            bottom: 20px;
+            left: 50px;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgbx(0,0,0,0.1);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <model-viewer
+    src="assets/tanjiro.glb"
+    ios-src="assets/tanjiro.usdz"
+    alt="귀멸의 칼날 3D 모델"
+    ar
+    ar-modes="webxr quick-look"
+    ar-placement="floor"
+    camera-controls
+    touch-action="pan-y"
+    shadow-intensity="1"
+    auto-rotate>
+<button slot="ar-button" id ="ar-button">
+    지면 인식
+</button>
+<div id ="ar-prompt">
+    <img src="https://modelviewer.dev/shared-assets/icons/hand.png" alt="AR 가이드">
+</div>
+</model-viewer>
+<script>
+    const modelviewer = document.querySelector('model-viewer');
+    modelviewer.addEventListener('ar-status',(event) => {
+if(event.detail.status==='object-placed'){
+    console.log("지면에 모델이 배치되었습니다.");
+}
+    });
+</script>
+    
+</body>
+</html>
